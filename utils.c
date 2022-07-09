@@ -1,14 +1,13 @@
 #include "Includes/philo.h"
+#include <limits.h>
+#include <sys/types.h>
 
-int32_t	ft_strlen(t_string str)
+u_int16_t	ft_strlen(const t_string str)
 {
-	int32_t		ret;
 	t_string	temp;
 
-	if (!str)
-		return (-1);
 	temp = str;
-	while (*temp)
+	while (((u_int8_t)*temp & UINT8_MAX) != 0)
 		temp++;
 	return (temp - str);
 }
@@ -28,8 +27,21 @@ bool	ft_atoi(t_string str, int32_t *ret)
 			return (false);
 		atoi = atoi * 10 + (*str - 48);
 	}
-	if (atoi > INT32_MIN * -1)
+	if (atoi > (int64_t)INT32_MIN * -1)
 		return (false);
 	*ret *= atoi;
 	return (true);
+}
+
+u_int32_t	get_time(void)
+{
+	static struct timeval	tv;
+	gettimeofday(&tv, NULL);
+	return (tv.tv_usec);
+}
+
+int		write_error(t_string error)
+{
+	write(1, error, ft_strlen(error));
+	return (1);
 }
